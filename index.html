@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>SmartVet Broiler Budget</title>
+<link rel="icon" href="logo.webp">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: inputs on the left as numbered intake areas, live budget sheet on the right; stacks on phones. */
+:root{--bg:#f3f7f4;--surface:#ffffff;--sunk:#e7f0ea;--fg:#16241c;--soft:#52685a;--faint:#7d9487;--line:#d2e0d6;--brand:#145c2e;--brand-fg:#ffffff;--good:#2f7d32;--good-bg:#e2f0df;--bad:#b3261e;--bad-bg:#fbe4e1;--warn-bg:#fdf1d3;--warn:#7a5600;
+--display:"Archivo","Helvetica Neue",Arial,sans-serif;--body:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1712;--surface:#17221b;--sunk:#1f2d24;--fg:#e6efe9;--soft:#a9bdb0;--faint:#7f9587;--line:#2c3d32;--brand:#6fcf8d;--brand-fg:#0f1712;--good:#7fd88a;--good-bg:#1d3a24;--bad:#ff9a8f;--bad-bg:#40201d;--warn-bg:#3a3014;--warn:#f0cf7a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1712;--surface:#17221b;--sunk:#1f2d24;--fg:#e6efe9;--soft:#a9bdb0;--faint:#7f9587;--line:#2c3d32;--brand:#6fcf8d;--brand-fg:#0f1712;--good:#7fd88a;--good-bg:#1d3a24;--bad:#ff9a8f;--bad-bg:#40201d;--warn-bg:#3a3014;--warn:#f0cf7a;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.45;padding-inline:16px;padding-block:20px 48px}
+.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+header.top{display:flex;gap:14px;align-items:center;flex-wrap:wrap;border-bottom:2px solid var(--brand);padding-bottom:14px}
+header.top img{width:64px;height:64px;flex:none}
+header.top h1{font-family:var(--display);font-weight:800;font-size:1.7rem;margin:0;color:var(--brand);line-height:1.1}
+header.top p{margin:2px 0 0;color:var(--soft)}
+.tools{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+button{font:inherit;font-weight:600;border:1px solid var(--line);background:var(--surface);color:var(--fg);padding:8px 12px;border-radius:6px;cursor:pointer}
+button.primary{background:var(--brand);color:var(--brand-fg);border-color:var(--brand)}
+button.x{padding:4px 9px;color:var(--soft)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.note{background:var(--warn-bg);color:var(--warn);padding:10px 12px;border-radius:6px;font-size:.9rem}
+.grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:24px;align-items:start}
+@media (max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}}
+.col{display:flex;flex-direction:column;gap:14px;min-width:0}
+section.area{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:12px}
+section.area h2{font-family:var(--display);font-size:1.02rem;font-weight:700;margin:0;color:var(--brand);display:flex;gap:8px;align-items:baseline}
+section.area h2 span{font-size:.75rem;color:var(--faint);font-weight:500;letter-spacing:.06em;text-transform:uppercase}
+.hint{color:var(--soft);font-size:.85rem;margin:0}
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:.82rem;color:var(--soft);min-width:0}
+input,select{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:7px 8px;width:100%;min-width:0;font-variant-numeric:tabular-nums}
+label.c{display:flex;gap:6px;align-items:center;font-size:.85rem;color:var(--soft)}
+label.c input{width:auto}
+.sub{border-top:1px dashed var(--line);padding-top:10px;display:flex;flex-direction:column;gap:10px}
+.sub h3{margin:0;font-size:.9rem;font-weight:600}
+.rows{display:flex;flex-direction:column;gap:6px}
+.row{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,1fr) minmax(0,1.6fr) auto auto;gap:6px;align-items:center}
+.row.h{font-size:.72rem;color:var(--faint);text-transform:uppercase;letter-spacing:.05em}
+.sheet{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:16px;min-width:0}
+.sheet h2{font-family:var(--display);font-size:1rem;font-weight:700;margin:0 0 6px;color:var(--brand);text-wrap:balance}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.86rem;font-variant-numeric:tabular-nums}
+th{font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);font-weight:600;border-bottom:1px solid var(--line)}
+th,td{padding:6px 8px;text-align:right;white-space:nowrap}
+th:first-child,td:first-child{text-align:left;white-space:normal}
+tbody tr:nth-child(even){background:var(--sunk)}
+tr.t td{font-weight:700;border-top:2px solid var(--brand);background:transparent}
+tr.b td{font-weight:700}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.kpi{background:var(--sunk);border-radius:6px;padding:12px}
+.kpi small{color:var(--soft);display:block}
+.kpi b{font-family:var(--display);font-size:1.45rem;color:var(--brand);font-variant-numeric:tabular-nums}
+.kpi.loss b{color:var(--bad)}
+.pill{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.05em;padding:3px 8px;border-radius:99px;background:var(--good-bg);color:var(--good)}
+.pill.loss{background:var(--bad-bg);color:var(--bad)}
+.who{color:var(--soft);font-size:.9rem;margin:0}
+ul.notes{margin:0;padding-left:18px;color:var(--soft);font-size:.84rem}
+@media print{:root{--bg:#fff;--surface:#fff;--sunk:#eef4f0;--fg:#16241c;--soft:#52685a;--faint:#7d9487;--line:#d2e0d6;--brand:#145c2e;--good:#2f7d32;--good-bg:#e2f0df;--bad:#b3261e;--bad-bg:#fbe4e1}body{padding:0;font-size:12px}.tools,#exNote,#form{display:none!important}.grid{display:block}.sheet{border:0;padding:0}.sheet>div{break-inside:avoid}}
+</style>
+</head><body>
+<div class="wrap">
+<header class="top">
+<img alt="SmartVet Africa logo" src="logo.webp">
+<div><h1>SmartVet Africa</h1><p>Broiler production budget calculator</p></div>
+<div class="tools"><button id="btnExample">Load example</button><button id="btnClear">Clear all</button><button id="btnCopy">Copy summary</button><button id="btnPrint" class="primary">Print / save PDF</button></div>
+</header>
+<div class="note" id="exNote">This opens with an example budget (500 birds, October 2026 prices). Change the figures for your farmer, or press Clear all to start empty. Your entries are kept on this device only.</div>
+<div class="grid">
+<div class="col" id="form"></div>
+<div class="col"><div class="sheet" id="out"></div></div>
+</div>
+</div>
+<script>
+const EX={farmer:"Mr. Ouma Alex",place:"Gulu",by:"",chicks:500,mort:5,chickPrice:2900,transport:20000,
+opts:[{on:true,name:"Option A: full cycle",pref:true,days:42,weight:2.5,price:20000,grower:1.5,fin:1.0,sl:500},
+      {on:true,name:"Option B: early sale",pref:false,days:29,weight:1.6,price:13000,grower:1.2,fin:0,sl:0}],
+st:{kg:1,bagKg:25,bagCost:80000,bought:true},
+gm:120,gc:50,fm:150,fc:50,maizePrice:900,maizeBag:100,maizeBought:true,concPrice:4700,concBag:25,concBought:false,
+health:[{n:"Gumboro vaccine (500-dose vial)",q:1,c:20000,b:false},{n:"Lasota vaccine, booster (500-dose vial)",q:1,c:20000,b:false},{n:"NCD + IB vaccine (500-dose vial)",q:1,c:20000,b:false},{n:"Vitamins and electrolytes",q:1,c:40000,b:false},{n:"Broad-spectrum antibiotic",q:1,c:80000,b:false},{n:"Charcoal for brooding (bags)",q:2,c:45000,b:true},{n:"White lime (bags)",q:2,c:35000,b:true}],
+sup:[{n:"Tarpaulins",q:2,c:60000,b:false},{n:"Plywood sheets",q:3,c:45000,b:false},{n:"Basin / bucket",q:1,c:10000,b:false},{n:"Bar soap",q:2,c:5000,b:false},{n:"Sprayer",q:1,c:60000,b:false},{n:"Hard brooms",q:2,c:2000,b:false},{n:"Squeezer / brush",q:1,c:15000,b:false},{n:"Small towels",q:2,c:2000,b:false},{n:"Liquid soap, 5 litres",q:1,c:20000,b:false},{n:"Gumboots (pairs)",q:2,c:10000,b:false},{n:"Overcoats",q:2,c:25000,b:false},{n:"Face masks (box)",q:1,c:10000,b:false},{n:"Insecticide for termites",q:1,c:25000,b:false},{n:"Gloves (box)",q:1,c:5000,b:false}],
+staff:[{n:"Team members",q:2,c:250000}],manureOn:true,manureBase:1500000};
+const EMPTY=()=>({farmer:"",place:"",by:"",chicks:0,mort:5,chickPrice:0,transport:20000,
+opts:[{on:true,name:"Option A: full cycle",pref:false,days:42,weight:2.5,price:0,grower:1.5,fin:1.0,sl:0},{on:false,name:"Option B: early sale",pref:false,days:29,weight:1.6,price:0,grower:1.2,fin:0,sl:0}],
+st:{kg:1,bagKg:25,bagCost:80000,bought:false},gm:120,gc:50,fm:150,fc:50,maizePrice:0,maizeBag:100,maizeBought:false,concPrice:4700,concBag:25,concBought:false,
+health:[{n:"Gumboro vaccine",q:1,c:20000,b:false},{n:"Lasota vaccine, booster",q:1,c:20000,b:false},{n:"NCD + IB vaccine",q:1,c:20000,b:false},{n:"Charcoal for brooding (bags)",q:0,c:45000,b:false},{n:"White lime (bags)",q:0,c:35000,b:false}],sup:[],staff:[{n:"Team members",q:2,c:250000}],manureOn:true,manureBase:1500000});
+let S;try{S=JSON.parse(localStorage.getItem("svbb1"))}catch(e){}
+if(!S||!S.opts)S=JSON.parse(JSON.stringify(EX));
+const $=s=>document.querySelector(s),u=x=>isFinite(x)?Math.round(x).toLocaleString("en-US"):"–",esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const get=p=>p.split(".").reduce((o,k)=>o[k],S);
+const set=(p,v)=>{const ks=p.split("."),l=ks.pop();ks.reduce((o,k)=>o[k],S)[l]=v};
+const F=(label,p,t="number",step="any")=>`<label class="f">${label}<input id="f_${p.replace(/\./g,"_")}" data-p="${p}" type="${t}" ${t=="number"?`inputmode="decimal" min="0" step="${step}"`:""} value="${esc(get(p))}"></label>`;
+const C=(label,p)=>`<label class="c"><input id="f_${p.replace(/\./g,"_")}" data-p="${p}" type="checkbox" ${get(p)?"checked":""}>${label}</label>`;
+function list(key,title,costLabel,bought){const rows=S[key].map((r,i)=>`<div class="row"><input aria-label="Item" id="l_${key}_${i}_n" data-p="${key}.${i}.n" type="text" value="${esc(r.n)}"><input aria-label="Quantity" id="l_${key}_${i}_q" data-p="${key}.${i}.q" type="number" min="0" step="any" value="${r.q}"><input aria-label="${costLabel}" id="l_${key}_${i}_c" data-p="${key}.${i}.c" type="number" min="0" step="any" value="${r.c}">${bought?`<label class="c" title="Already purchased"><input id="l_${key}_${i}_b" data-p="${key}.${i}.b" type="checkbox" ${r.b?"checked":""}>Bought</label>`:"<span></span>"}<button class="x" data-del="${key}.${i}" aria-label="Remove ${esc(r.n)}">×</button></div>`).join("");
+return `<div class="rows"><div class="row h"><span>${title}</span><span>Qty</span><span>${costLabel}</span><span></span><span></span></div>${rows}</div><div><button data-add="${key}">Add a line</button></div>`}
+function optForm(i){const p="opts."+i;return `<div class="sub"><h3>${i?C("Compare a second selling option",p+".on"):"First selling option"}</h3>${S.opts[i].on?`<div class="fields">${F("Option name",p+".name","text")}${F("Days to sale",p+".days")}${F("Sale weight (kg)",p+".weight")}${F("Selling price per bird (UGX)",p+".price")}${F("Grower feed (kg per bird)",p+".grower")}${F("Finisher feed (kg per bird)",p+".fin")}${F("Slaughter cost per bird (UGX)",p+".sl")}</div>${C("This is our preferred option",p+".pref")}`:""}</div>`}
+function renderForm(){$("#form").innerHTML=`
+<section class="area"><h2><span>Area 1</span>Farmer and batch</h2><div class="fields">${F("Farmer's name","farmer","text")}${F("Location","place","text")}${F("Prepared by","by","text")}${F("Day-old chicks placed","chicks","number","1")}${F("Expected mortality (%)","mort")}</div></section>
+<section class="area"><h2><span>Area 2</span>Selling plan</h2><p class="hint">Enter 0 for finisher if birds are sold before the finisher stage.</p>${optForm(0)}${optForm(1)}</section>
+<section class="area"><h2><span>Area 3</span>Chicks</h2><div class="fields">${F("Price per chick (UGX)","chickPrice")}${F("Chick transport, whole batch (UGX)","transport")}</div></section>
+<section class="area"><h2><span>Area 4</span>Feed</h2>
+<div class="sub"><h3>Starter (bought complete feed)</h3><div class="fields">${F("Starter (kg per bird)","st.kg")}${F("Bag size (kg)","st.bagKg")}${F("Price per bag (UGX)","st.bagCost")}</div>${C("Starter is already purchased","st.bought")}</div>
+<div class="sub"><h3>Mixing formulas (kg per batch)</h3><div class="fields">${F("Grower: broken maize","gm")}${F("Grower: 25% concentrate","gc")}${F("Finisher: broken maize","fm")}${F("Finisher: 25% concentrate","fc")}</div></div>
+<div class="sub"><h3>Ingredient prices</h3><div class="fields">${F("Maize price per kg (UGX)","maizePrice")}${F("Maize bag size (kg)","maizeBag")}${F("Concentrate price per kg (UGX)","concPrice")}${F("Concentrate bag size (kg)","concBag")}</div>${C("Maize is already purchased","maizeBought")}${C("Concentrate is already purchased","concBought")}</div></section>
+<section class="area"><h2><span>Area 5</span>Health and biosecurity</h2><p class="hint">Tick Bought for anything the farmer already has. Leave water out if the team fetches it.</p>${list("health","Item","Unit cost",true)}</section>
+<section class="area"><h2><span>Area 6</span>Labour</h2><p class="hint">Monthly pay is charged only for the days the birds are on the farm. Remove all lines for unpaid family labour.</p>${list("staff","Role","Monthly pay",false)}</section>
+<section class="area"><h2><span>Area 7 and 8</span>Small supplies and other income</h2><p class="hint">Feeders, drinkers and housing are not part of this budget.</p>${list("sup","Item","Unit cost",true)}
+<div class="sub">${C("Include manure sales (estimate)","manureOn")}<div class="fields">${F("Manure value at 3,500 birds, 42 days (UGX)","manureBase")}</div></div></section>`}
+function calc(o){const n=+S.chicks||0,surv=Math.round(n*(1-(+S.mort||0)/100));
+const stKg=n*S.st.kg,stBags=S.st.bagKg>0?Math.ceil(stKg/S.st.bagKg-1e-9):0,stCost=stBags*S.st.bagCost;
+const rows=[["Starter"+(S.st.bought?" (already purchased)":""),S.st.kg,stKg,S.st.bagKg?S.st.bagCost/S.st.bagKg:0,stCost]];let mz=0,cn=0;
+[["Grower mash",o.grower,+S.gm,+S.gc],["Finisher mash",o.fin,+S.fm,+S.fc]].forEach(([nm,kb,m,c])=>{if(!(kb>0)||m+c<=0)return;const kg=n*kb,mk=kg*m/(m+c),ck=kg*c/(m+c),cost=mk*S.maizePrice+ck*S.concPrice;rows.push([nm,kb,kg,cost/kg,cost]);mz+=mk;cn+=ck});
+const mb=S.maizeBag>0?Math.ceil(mz/S.maizeBag-1e-9):0,cb=S.concBag>0?Math.ceil(cn/S.concBag-1e-9):0,mzCost=mb*S.maizeBag*S.maizePrice,cnCost=cb*S.concBag*S.concPrice;
+const sum=(a,f)=>a.reduce((t,r)=>t+(f(r)?r.q*r.c:0),0);
+const hBuy=sum(S.health,r=>!r.b),hPre=sum(S.health,r=>r.b),sBuy=sum(S.sup,r=>!r.b),sPre=sum(S.sup,r=>r.b);
+const months=o.days/7/4.345,labour=S.staff.reduce((t,r)=>t+r.q*r.c,0)*months,chicks=n*S.chickPrice,sl=surv*o.sl;
+const buy=[["Day-old chicks",chicks],["Chick transport",+S.transport||0]],pre=[];
+(S.st.bought?pre:buy).push(["Starter feed",stCost]);(S.maizeBought?pre:buy).push(["Broken maize",mzCost]);(S.concBought?pre:buy).push(["25% broiler concentrate",cnCost]);
+buy.push(["Health and biosecurity",hBuy],["Farm supplies and small items",sBuy],["Labour",labour]);if(sl)buy.push(["Slaughtering",sl]);
+if(hPre)pre.push(["Health items",hPre]);if(sPre)pre.push(["Supplies",sPre]);
+const cash=buy.reduce((t,r)=>t+r[1],0),preT=pre.reduce((t,r)=>t+r[1],0),total=cash+preT;
+const manure=S.manureOn?S.manureBase*n/3500*o.days/42:0,revB=surv*o.price,rev=revB+manure,profit=rev-total;
+return{o,surv,rows,bags:[["Broken maize",mz,mb,mzCost,S.maizeBought],["25% broiler concentrate",cn,cb,cnCost,S.concBought]],feedKg:rows.reduce((t,r)=>t+r[2],0),buy,pre,cash,total,manure,revB,rev,profit,margin:rev?profit/rev:0,be:surv?(total-manure)/surv:0,months}}
+function results(){return S.opts.filter(o=>o.on).map(calc)}
+function tbl(head,rows,total){return `<div class="tw"><table><thead><tr>${head.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>${rows.map(r=>`<tr${r.cls?` class="${r.cls}"`:""}>${(r.cells||r).map(c=>`<td>${c}</td>`).join("")}</tr>`).join("")}${total?`<tr class="t">${total.map(c=>`<td>${c}</td>`).join("")}</tr>`:""}</tbody></table></div>`}
+function renderOut(){const R=results();if(!R.length||!(S.chicks>0)){$("#out").innerHTML=`<h2>Budget</h2><p class="who">Enter the number of chicks and a selling option to see the budget.</p>`;return}
+const nm=r=>esc(r.o.name)+(r.o.pref?" (preferred)":""),cols=R.map(nm);
+const lines=[...new Set(R.flatMap(r=>r.buy.map(b=>b[0])))],pres=[...new Set(R.flatMap(r=>r.pre.map(b=>b[0])))];
+const v=(r,arr,k)=>{const x=arr.find(b=>b[0]==k);return x?u(x[1]):"–"};
+let h=`<div><h2>${esc(S.farmer||"Farmer")} · ${u(S.chicks)} broilers</h2><p class="who">${S.place?esc(S.place)+" · ":""}${R[0].surv} birds reach market after ${+S.mort||0}% mortality${S.by?" · prepared by "+esc(S.by):""}</p></div>`;
+h+=`<div class="kpis">${R.map(r=>`<div class="kpi${r.profit<0?" loss":""}"><span class="pill${r.profit<0?" loss":""}">${r.profit<0?"MAKES A LOSS":"PROFITABLE"}</span><small>${nm(r)} net profit</small><b>UGX ${u(r.profit)}</b><small>Cash still needed: UGX ${u(r.cash)}</small></div>`).join("")}</div>`;
+h+=`<div><h2>Production cost summary</h2>${tbl(["Cost line",...cols],[...lines.map(k=>[k,...R.map(r=>v(r,r.buy,k))]),{cls:"b",cells:["Cash still needed",...R.map(r=>u(r.cash))]},...pres.map(k=>[k+" (already purchased)",...R.map(r=>v(r,r.pre,k))])],["Total production cost",...R.map(r=>u(r.total))])}</div>`;
+h+=`<div><h2>Sales and result</h2>${tbl(["Measure",...cols],[["Days to sale",...R.map(r=>r.o.days)],["Sale weight",...R.map(r=>r.o.weight+" kg")],["Feed per bird",...R.map(r=>(r.feedKg/S.chicks).toFixed(1)+" kg")],["Live birds sold ("+R[0].surv+")",...R.map(r=>u(r.revB))],["Manure (estimate)",...R.map(r=>u(r.manure))],{cls:"b",cells:["Total revenue",...R.map(r=>u(r.rev))]},["Profit margin",...R.map(r=>Math.round(r.margin*100)+"%")],["Breakeven price per bird",...R.map(r=>u(r.be))],["Breakeven price per kg",...R.map(r=>u(r.be/r.o.weight))],["Profit per day on farm",...R.map(r=>u(r.profit/r.o.days))]],["Net profit (UGX)",...R.map(r=>u(r.profit))])}</div>`;
+R.forEach(r=>{h+=`<div><h2>${nm(r)}: feed</h2>${tbl(["Stage","kg/bird","Total kg","UGX/kg","Cost"],r.rows.map(x=>[x[0],(+x[1]).toFixed(1),u(x[2]),u(x[3]),u(x[4])]),["Feed consumed","",u(r.feedKg),"",u(r.rows.reduce((t,x)=>t+x[4],0))])}${tbl(["Mixing ingredient","Needed kg","Bags","Spend"],r.bags.map(b=>[b[0]+(b[4]?" (already purchased)":""),u(b[1]),b[2],u(b[3])]))}</div>`});
+const notes=["Production costs only. Feeders, drinkers, housing and litter are not included.","Feed is costed in whole bags, so some ingredients are left over for the next batch.","Already purchased items count in the total cost and profit but not in the cash still needed.","Labour is monthly pay for the days the birds are on the farm. All surviving birds are assumed sold.","Figures are planning estimates. Confirm prices with suppliers before buying."];
+if(R.length>1){const p=R.find(r=>r.o.pref),best=R.reduce((a,b)=>b.profit>a.profit?b:a);if(p&&best!==p)notes.unshift(`The preferred option earns UGX ${u(best.profit-p.profit)} less than ${esc(best.o.name)} on these figures.`)}
+h+=`<div><h2>Notes</h2><ul class="notes">${notes.map(n=>`<li>${n}</li>`).join("")}</ul></div>`;$("#out").innerHTML=h}
+function save(){try{localStorage.setItem("svbb1",JSON.stringify(S))}catch(e){}}
+function summary(){const R=results();return [`SmartVet Africa broiler budget: ${S.farmer||"Farmer"}, ${u(S.chicks)} birds${S.place?", "+S.place:""}`,...R.map(r=>`${r.o.name}${r.o.pref?" (preferred)":""}: ${r.o.weight} kg at ${r.o.days} days, UGX ${u(r.o.price)} per bird. Cash still needed UGX ${u(r.cash)}, total cost UGX ${u(r.total)}, revenue UGX ${u(r.rev)}, net profit UGX ${u(r.profit)}, breakeven UGX ${u(r.be)} per bird.`),S.by?`Prepared by ${S.by}.`:"","Figures are planning estimates."].filter(Boolean).join("\n")}
+$("#form").addEventListener("input",e=>{const t=e.target,p=t.dataset.p;if(!p)return;set(p,t.type=="checkbox"?t.checked:t.type=="number"?(parseFloat(t.value)||0):t.value);if(t.type=="checkbox"&&/^opts\.\d\.on$/.test(p))renderForm();renderOut();save()});
+$("#form").addEventListener("click",e=>{const a=e.target.dataset.add,d=e.target.dataset.del;if(a){S[a].push(a=="staff"?{n:"",q:1,c:0}:{n:"",q:1,c:0,b:false})}else if(d){const[k,i]=d.split(".");S[k].splice(+i,1)}else return;renderForm();renderOut();save()});
+$("#btnExample").onclick=()=>{S=JSON.parse(JSON.stringify(EX));$("#exNote").hidden=false;renderForm();renderOut();save()};
+$("#btnClear").onclick=()=>{S=EMPTY();$("#exNote").hidden=true;renderForm();renderOut();save()};
+$("#btnCopy").onclick=async e=>{const b=e.currentTarget,t=summary();try{await navigator.clipboard.writeText(t);b.textContent="Copied"}catch(err){b.textContent="Copy failed"}setTimeout(()=>b.textContent="Copy summary",1500)};
+$("#btnPrint").onclick=()=>window.print();
+renderForm();renderOut();
+</script>
+</body></html>
